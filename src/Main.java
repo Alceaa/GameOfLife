@@ -7,7 +7,7 @@ import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
-    private static ArrayList<String> array;
+    private static char[][] cage;
     private static String field_size_input;
     private static String[] field_size;
     private static String path = "1";
@@ -69,42 +69,32 @@ public class Main {
         if(condition) {
             try {
                 if (Objects.equals(path, "1")) {
-                    if (read(pathDefault).size() > Integer.parseInt(field_size[0])
-                            || read(pathDefault).get(0).length() > Integer.parseInt(field_size[1])) {
-                        System.out.println("Фигура слишком большая");
-                        System.exit(0);
-                    } else {
-                        TimeUnit.SECONDS.sleep(2);
-                        if(check) {
-                            check = false;
-                            array = read(pathDefault);
-                            createCell(s, Color.black);
-                            Logic.cycle(read(pathDefault));
-                        }
-                        else{
-                            createCell(s, Color.black);
-                            Logic.cycle(array);
-                        }
-
+                    TimeUnit.SECONDS.sleep(2);
+                    if(check) {
+                        check = false;
+                        cage = read(pathDefault);
+                        createCell(s, Color.black);
+                        Logic.cycle(read(pathDefault));
+                        createCell(s, Color.black);
+                    }
+                    else{
+                        createCell(s, Color.black);
+                        Logic.cycle(cage);
+                        createCell(s, Color.black);
                     }
                 } else {
-                    if (read(path).size() > Integer.parseInt(field_size[0])
-                            || read(path).get(0).length() > Integer.parseInt(field_size[1])) {
-                        System.out.println("Фигура слишком большая");
-                        System.exit(0);
-                    } else {
-                        TimeUnit.SECONDS.sleep(2);
-                        if(check) {
-                            check = false;
-                            array = read(path);
-                            createCell(s, Color.black);
-                            Logic.cycle(read(path));
-                        }
-                        else{
-                            System.out.println(array.get(0));
-                            createCell(s, Color.black);
-                            Logic.cycle(array);
-                        }
+                    TimeUnit.SECONDS.sleep(2);
+                    if(check) {
+                        check = false;
+                        cage = read(path);
+                        createCell(s, Color.black);
+                        Logic.cycle(read(path));
+                        createCell(s, Color.black);
+                    }
+                    else{
+                        createCell(s, Color.black);
+                        Logic.cycle(cage);
+                        createCell(s, Color.black);
                     }
                 }
             } catch (Exception e) {
@@ -117,26 +107,41 @@ public class Main {
             createCell(s, Color.red);
         }
     }
-    private static ArrayList<String> read(String path) throws FileNotFoundException {
+    private static char[][] read(String path) throws FileNotFoundException {
         FileReader fr = new FileReader(path);
         ArrayList<String> input = new ArrayList<String>();
+        char[][] cage = new char[Integer.parseInt(field_size[0])][Integer.parseInt(field_size[1])];
+        for(int i = 0; i < Integer.parseInt(field_size[0]); i++){
+            for(int j = 0; j < Integer.parseInt(field_size[1]); j++){
+                cage[i][j] = '0';
+            }
+        }
         Scanner s = new Scanner(fr);
         while(s.hasNextLine()){
             String line = s.nextLine();
             input.add(line);
         }
-        return input;
+        int h = Integer.parseInt(xyStart[0]) - 1;
+        int w = Integer.parseInt(xyStart[1]) - 1;
+        for(int row = 0; row < input.size(); row++){
+            for(int col = 0; col < input.get(row).length(); col++){
+                cage[row][col] = input.get(row).charAt(col);
+            }
+        }
+        return cage;
     }
 
     private static void createCell(Scene s, Color color) {
         Group g = new Group();
-        for(int index = 0; index < array.size();index++){
-            for(int index_char = 0; index_char < array.get(index).length(); index_char++){
-                if(array.get(index).charAt(index_char) == '1'){
-                    Cell c = new Cell(index_char,index, xyStart, color);
+        for(int row = 0; row < cage.length; row++){
+            for(int col = 0; col < cage[row].length; col++){
+                System.out.print(cage[row][col] + " ");
+                if(cage[row][col] == '1'){
+                    Cell c = new Cell(col,row, xyStart, color);
                     g.addCell(c);
                 }
             }
+            System.out.println("");
         }
         s.setGroup(g);
         s.repaint();
@@ -144,7 +149,8 @@ public class Main {
     public static void setCondition(boolean cond){
         condition = cond;
     }
-    public static void setArray(ArrayList<String> text){
-        array = text;
+    public static void setCage(char[][] cageChanged){
+        cage = cageChanged;
     }
+
 }
