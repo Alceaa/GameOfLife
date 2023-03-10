@@ -7,6 +7,7 @@ import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
+    private static ArrayList<String> array;
     private static String field_size_input;
     private static String[] field_size;
     private static String path = "1";
@@ -64,11 +65,7 @@ public class Main {
         start();
 
     }
-    public static void start() throws FileNotFoundException {
-        if(check == false){
-            path = "buf.txt";
-        }
-        check = false;
+    public static void start() {
         if(condition) {
             try {
                 if (Objects.equals(path, "1")) {
@@ -77,9 +74,17 @@ public class Main {
                         System.out.println("Фигура слишком большая");
                         System.exit(0);
                     } else {
-                        createCell(pathDefault, s, Color.black);
                         TimeUnit.SECONDS.sleep(2);
-                        Logic.cycle(read(pathDefault), field_size);
+                        if(check) {
+                            check = false;
+                            array = read(pathDefault);
+                            createCell(s, Color.black);
+                            Logic.cycle(read(pathDefault));
+                        }
+                        else{
+                            createCell(s, Color.black);
+                            Logic.cycle(array);
+                        }
 
                     }
                 } else {
@@ -88,9 +93,18 @@ public class Main {
                         System.out.println("Фигура слишком большая");
                         System.exit(0);
                     } else {
-                        createCell(path, s, Color.black);
                         TimeUnit.SECONDS.sleep(2);
-                        Logic.cycle(read(path), field_size);
+                        if(check) {
+                            check = false;
+                            array = read(path);
+                            createCell(s, Color.black);
+                            Logic.cycle(read(path));
+                        }
+                        else{
+                            System.out.println(array.get(0));
+                            createCell(s, Color.black);
+                            Logic.cycle(array);
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -100,7 +114,7 @@ public class Main {
             }
         }
         else {
-            createCell(path, s, Color.red);
+            createCell(s, Color.red);
         }
     }
     private static ArrayList<String> read(String path) throws FileNotFoundException {
@@ -114,11 +128,11 @@ public class Main {
         return input;
     }
 
-    private static void createCell(String path, Scene s, Color color) throws FileNotFoundException {
+    private static void createCell(Scene s, Color color) {
         Group g = new Group();
-        for(int index = 0; index < read(path).size();index++){
-            for(int index_char = 0; index_char < read(path).get(index).length(); index_char++){
-                if(read(path).get(index).charAt(index_char) == '1'){
+        for(int index = 0; index < array.size();index++){
+            for(int index_char = 0; index_char < array.get(index).length(); index_char++){
+                if(array.get(index).charAt(index_char) == '1'){
                     Cell c = new Cell(index_char,index, xyStart, color);
                     g.addCell(c);
                 }
@@ -129,5 +143,8 @@ public class Main {
     }
     public static void setCondition(boolean cond){
         condition = cond;
+    }
+    public static void setArray(ArrayList<String> text){
+        array = text;
     }
 }

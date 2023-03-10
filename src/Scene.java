@@ -28,16 +28,20 @@ public class Scene extends JFrame {
     }
     @Override
     public void paint(Graphics g){
-        super.paint(g);
-        for(int w = 0; w < width; w += 50){
-            g.drawLine(w, 50, w, height);
-        }
-        for(int h = 0; h < height + 51; h += 50){
-            g.drawLine(0, h, width, h);
-        }
-        for(int cell = 0; cell < group.size(); cell++){
-            g.setColor(group.get(cell).getColor());
-            g.fillRect(group.get(cell).getX(), group.get(cell).getY(), 50, 50);
+        try {
+            super.paint(g);
+            for (int w = 0; w < width; w += 50) {
+                g.drawLine(w, 50, w, height);
+            }
+            for (int h = 0; h < height + 51; h += 50) {
+                g.drawLine(0, h, width, h);
+            }
+            for (int cell = 0; cell < group.size(); cell++) {
+                g.setColor(group.get(cell).getColor());
+                g.fillRect(group.get(cell).getX(), group.get(cell).getY(), 50, 50);
+            }
+        }catch(NullPointerException e){
+            ;
         }
     }
 
