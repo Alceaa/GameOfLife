@@ -11,13 +11,14 @@ public class Main {
     private static String field_size_input;
     private static String[] field_size;
     private static String path = "1";
+    private static int time;
     private static String xyStart_input;
     private static String[] xyStart;
     private static String pathDefault = "src/input.txt";
     private static Scene s;
     private static boolean condition = true;
     private static boolean check = true;
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws FileNotFoundException, InterruptedException {
         Scanner in = new Scanner(System.in);
 
         //размер поля
@@ -61,40 +62,47 @@ public class Main {
         //путь к файлу + создание сцены
         System.out.println("Укажите путь к файлу с описанием фигуры (файл по умолчанияю - '1')");
         path = in.nextLine();
+
+        System.out.println("Укажите время задержки (в секундах):");
+        try {
+            time = in.nextInt();
+            if(time < 0){
+                System.out.println("Время задержки должно быть больше 0");
+                System.exit(0);
+            }
+        }catch (Exception e){
+            System.out.println("Некорректное время задержки");
+        }
         s = new Scene(field_size);
         start();
 
     }
-    public static void start() {
+    public static void start() throws InterruptedException {
         if(condition) {
             try {
                 if (Objects.equals(path, "1")) {
-                    TimeUnit.SECONDS.sleep(2);
+                    TimeUnit.SECONDS.sleep(time);
                     if(check) {
                         check = false;
                         cage = read(pathDefault);
                         createCell(s, Color.black);
-                        Logic.cycle(read(pathDefault));
-                        createCell(s, Color.black);
+                        Logic.cycle(cage);
                     }
                     else{
                         createCell(s, Color.black);
                         Logic.cycle(cage);
-                        createCell(s, Color.black);
                     }
                 } else {
-                    TimeUnit.SECONDS.sleep(2);
+                    TimeUnit.SECONDS.sleep(time);
                     if(check) {
                         check = false;
                         cage = read(path);
                         createCell(s, Color.black);
-                        Logic.cycle(read(path));
-                        createCell(s, Color.black);
+                        Logic.cycle(cage);
                     }
                     else{
                         createCell(s, Color.black);
                         Logic.cycle(cage);
-                        createCell(s, Color.black);
                     }
                 }
             } catch (Exception e) {
@@ -104,6 +112,7 @@ public class Main {
             }
         }
         else {
+            TimeUnit.SECONDS.sleep(time);
             createCell(s, Color.red);
         }
     }
@@ -121,11 +130,20 @@ public class Main {
             String line = s.nextLine();
             input.add(line);
         }
-        int h = Integer.parseInt(xyStart[0]) - 1;
-        int w = Integer.parseInt(xyStart[1]) - 1;
+        int h = Integer.parseInt(xyStart[1]) - 1;
+        int w = Integer.parseInt(xyStart[0]) - 1;
         for(int row = 0; row < input.size(); row++){
             for(int col = 0; col < input.get(row).length(); col++){
-                cage[row][col] = input.get(row).charAt(col);
+                cage[h][w] = input.get(row).charAt(col);
+                w++;
+                if(w > cage[h].length - 1){
+                    w = 0;
+                }
+            }
+            h++;
+            w = Integer.parseInt(xyStart[0]) - 1;
+            if(h > cage.length - 1){
+                h = 0;
             }
         }
         return cage;
@@ -135,13 +153,11 @@ public class Main {
         Group g = new Group();
         for(int row = 0; row < cage.length; row++){
             for(int col = 0; col < cage[row].length; col++){
-                System.out.print(cage[row][col] + " ");
                 if(cage[row][col] == '1'){
-                    Cell c = new Cell(col,row, xyStart, color);
+                    Cell c = new Cell(col,row, color);
                     g.addCell(c);
                 }
             }
-            System.out.println("");
         }
         s.setGroup(g);
         s.repaint();

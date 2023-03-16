@@ -4,9 +4,9 @@ public class Cell {
     private int x;
     private int y;
     private Color color;
-    public  Cell(int x, int y, String[] xyStart, Color color){
-        this.x = (x + Integer.parseInt(xyStart[0]) - 1) * 50;
-        this.y = (y + Integer.parseInt(xyStart[1]) - 1) * 50 + 50;
+    public  Cell(int x, int y, Color color){
+        this.x = x * 50;
+        this.y = y * 50 + 50;
         this.color = color;
     }
     public int getX(){
