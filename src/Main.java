@@ -152,9 +152,9 @@ public class Main {
     private static void createCell(Scene s, Color color) {
         Group g = new Group();
         for(int row = 0; row < cage.length; row++){
-            for(int col = 0; col < cage[row].length; col++){
-                if(cage[row][col] == '1'){
-                    Cell c = new Cell(col,row, color);
+            for(int col = 0; col < cage[row].length; col++) {
+                if (cage[row][col] == '1') {
+                    Cell c = new Cell(col, row, color);
                     g.addCell(c);
                 }
             }
